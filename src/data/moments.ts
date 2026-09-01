@@ -413,14 +413,8 @@ function fetchMoments(): void {
 		return;
 	}
 
-	// 获取 GitHub Token（可选）
-	const token = localStorage.getItem("gh_moments_token") || "";
-	const headers: Record<string, string> = {
-		Accept: "application/vnd.github+json",
-	};
-	if (token) headers["Authorization"] = "Bearer " + token;
-
-	fetch("https://api.github.com/gists/" + config.gistId, { headers })
+	// Gitee 公开代码片段匿名可读（国内直连，无需 Token / VPN），返回结构与 GitHub Gist 一致
+	fetch("https://gitee.com/api/v5/gists/" + config.gistId)
 		.then((r) => {
 			if (!r.ok) throw new Error("HTTP " + r.status);
 			return r.json();
@@ -457,13 +451,8 @@ function fetchPinned(): void {
 		return;
 	}
 
-	const token = localStorage.getItem("gh_moments_token") || "";
-	const headers: Record<string, string> = {
-		Accept: "application/vnd.github+json",
-	};
-	if (token) headers["Authorization"] = "Bearer " + token;
-
-	fetch("https://api.github.com/gists/" + config.gistId, { headers })
+	// Gitee 公开代码片段匿名可读（国内直连，无需 Token / VPN），返回结构与 GitHub Gist 一致
+	fetch("https://gitee.com/api/v5/gists/" + config.gistId)
 		.then((r) => {
 			if (!r.ok) throw new Error("HTTP " + r.status);
 			return r.json();

@@ -28,9 +28,10 @@ const { notebook, id } = Astro.params;
 	</div>
 </MainGridLayout>
 
+<script is:inline define:vars={{ notebookGists: externalNotebooksConfig.notebookGists }}></script>
 <script is:inline>
 	const CONFIG = {
-		notebookGists: externalNotebooksConfig.notebookGists,
+		notebookGists: notebookGists,
 	};
 
 	function getUrlParam(name) {
@@ -54,14 +55,17 @@ const { notebook, id } = Astro.params;
 		}
 
 		try {
-			const response = await fetch(`https://gist.githubusercontent.com/raw/${gistId}/notebooks-entries.json`);
-			
+			// Gitee 公开代码片段：取详情接口里内联的文件内容（raw 地址无 CORS，不能在浏览器直读）
+			const response = await fetch(`https://gitee.com/api/v5/gists/${gistId}`);
+
 			if (!response.ok) {
 				throw new Error('Failed to fetch');
 			}
 
-			const data = await response.json();
-			const entry = data.entries.find(e => e.id === id);
+			const gist = await response.json();
+			const file = gist.files && gist.files["notebooks-entries.json"];
+			const allEntries = file ? JSON.parse(file.content || "[]") : [];
+			const entry = allEntries.find(e => e.id === id);
 
 			if (!entry) {
 				document.getElementById("entry-content").innerHTML = `

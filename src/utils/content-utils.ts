@@ -86,11 +86,15 @@ export async function getTagList(): Promise<Tag[]> {
 			"@/config/externalMomentsConfig"
 		);
 		if (externalMomentsConfig.enable && externalMomentsConfig.gistId) {
-			// 使用 raw URL 直接获取，不需要认证（更可靠的 URL 格式）
-			const rawUrl = `https://gist.githubusercontent.com/raw/${externalMomentsConfig.gistId}/${externalMomentsConfig.fileName}`;
-			const response = await fetch(rawUrl);
-			if (response.ok) {
-				const moments = await response.json();
+			// Gitee 公开代码片段详情接口（构建期服务器直连，无需认证）
+			const gistResp = await fetch(
+				`https://gitee.com/api/v5/gists/${externalMomentsConfig.gistId}`,
+			);
+			if (gistResp.ok) {
+				const gist = await gistResp.json();
+				const moments = JSON.parse(
+					gist.files?.[externalMomentsConfig.fileName]?.content || "[]",
+				);
 				moments.forEach((m: { tags?: string[] }) => {
 					m.tags?.forEach((tag: string) => {
 						if (!countMap[tag]) countMap[tag] = 0;
@@ -264,11 +268,17 @@ export async function getArchiveList(): Promise<ArchiveItem[]> {
 			"@/config/externalMomentsConfig"
 		);
 		if (externalMomentsConfig.enable && externalMomentsConfig.gistId) {
-			// 使用 raw URL 直接获取，不需要认证（更可靠的 URL 格式）
-			const rawUrl = `https://gist.githubusercontent.com/raw/${externalMomentsConfig.gistId}/${externalMomentsConfig.fileName}`;
-			const response = await fetch(rawUrl);
-			if (response.ok) {
-				const moments = (await response.json()) as Array<{
+			// Gitee 公开代码片段详情接口（构建期服务器直连，无需认证）
+			const gistResp = await fetch(
+				`https://gitee.com/api/v5/gists/${externalMomentsConfig.gistId}`,
+			);
+			if (gistResp.ok) {
+				const gist = await gistResp.json();
+				const moments = (
+					JSON.parse(
+						gist.files?.[externalMomentsConfig.fileName]?.content || "[]",
+					)
+				) as Array<{
 					id: string;
 					content: string;
 					published: string;
