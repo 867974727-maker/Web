@@ -14,9 +14,9 @@ export const externalMomentsConfig = {
 		"https://i.postimg.cc/7YLVJqnp/wei-xin-tu-pian-2026-05-07-020150-883.jpg",
 	// 后台登录密码的 SHA-256 哈希（明文密码不存入代码）
 	// 生成方式：printf '%s' "你的密码" | sha256sum
-	// 当前临时密码为 firefly123，上线后请改成你自己的
+	// 当前后台登录密码为 chaoren
 	adminPasswordHash:
-		"d896b9ccfb2ab4593844ee89f0777a72057dfe766b8c090a1889c85cfb2fe6d5",
+		"455e3959ebdfce1c5a11526f38f392188b51360228b82d92c9c8f651cef31ec6",
 	// 预留：构建期环境变量令牌（浏览器后台实际使用页面里手动填写、存于 localStorage 的 Gitee 令牌，此处通常留空）
 	githubToken: process.env.GITHUB_TOKEN || "",
 };
